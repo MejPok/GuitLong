@@ -1,0 +1,37 @@
+﻿<Page x:Class="GuitLong.Code.Parser.ParsePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GuitLong.Code.Parser"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ParsePage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="137*"/>
+            <RowDefinition Height="137*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Import New Song" FontSize="50" HorizontalAlignment="Center"/>
+        
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Enter URL:" HorizontalAlignment="Center"/>
+            <TextBox MaxWidth="500" Height="30" Text="" Name="urlText" />
+            <Button Content="Submit" MaxWidth="100" Height="30" Click="SubmitUrl"/>
+        </StackPanel>
+
+        <TextBox
+            Name="statusText"
+            Text="Status:"
+            IsReadOnly="True"
+            BorderThickness="0"
+            Background="Transparent"
+            TextWrapping="Wrap"
+            Padding="0"
+            Grid.Row="2"
+        />
+
+    </Grid>
+</Page>

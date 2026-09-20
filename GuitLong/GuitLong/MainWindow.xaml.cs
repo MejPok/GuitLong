@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using GuitLong.Code.Parser;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,9 +17,18 @@ namespace GuitLong
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static MainWindow Instance { get; private set; }
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this;
+            Instance = this;
         }
+
+        private async void ImportNewSong(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new ParsePage());
+        }
+
     }
 }

@@ -7,6 +7,20 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="409*"/>
+        </Grid.RowDefinitions>
+        <Rectangle Grid.Row="0" Fill="LightGray"/>
+        
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Content="Import" Grid.Row="0"  Width="70"   HorizontalAlignment="Left" Click="ImportNewSong"/>
+            <Button Content="Export" Grid.Row="0"  Width="70"   HorizontalAlignment="Left"/>
+            <Button Content="Songs" Grid.Row="0"  Width="90"   HorizontalAlignment="Left" Margin="10,0,10,0" FontStyle="Italic"/>
+        </StackPanel>
+        
+        <Frame Grid.Row="1" Background="#FF4E607D" Foreground="Black" Name="MainFrame">
 
+        </Frame>
     </Grid>
 </Window>
