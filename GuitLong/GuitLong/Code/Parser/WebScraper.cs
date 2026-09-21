@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Xml;
-using System.Net;
 
 namespace GuitLong.Code.Parser
 {
@@ -52,14 +53,31 @@ namespace GuitLong.Code.Parser
 
             string json = ExtractSongContent(html);
 
-            await File.WriteAllTextAsync("extracted.json", json);
+            var converter = new ConvertToSongData(json);
+            string converted = converter.TryConvert();
 
-            return new Song
+            await File.WriteAllTextAsync("extractedNew.json", converted);
+
+            return findBasicInfo(html);
+        }
+
+        Song findBasicInfo(string html)
+        {
+            string pattern = @"<a[^>]*href=""https://www\.ultimate-guitar\.com/artist/[^""]+""[^>]*>(?<artist>.*?)</a>";
+
+            Match match = Regex.Match(html, pattern, RegexOptions.IgnoreCase);
+
+            string artistName = "Not found";
+            if (match.Success)
             {
-                Title = "Test",
-                Author = "Test",
-                Content = json
-            };
+                artistName = match.Groups["artist"].Value;
+            }
+
+            var song = new Song();
+
+            song.Author = artistName;
+
+            return song;
         }
 
         private string ExtractSongContent(string html)
