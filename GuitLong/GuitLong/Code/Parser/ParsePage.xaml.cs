@@ -28,12 +28,18 @@ namespace GuitLong.Code.Parser
         {
             try
             {
-                var song = new WebScraper().ScrapeSongAsync(urlText.Text);
+                var song = new WebScraper().ScrapeSongAsync(urlText.Text).Result;
 
-            } catch(Exception ex)
+                songName.Text = "Name: " + song.Title;
+                songAuthor.Text = "Author: " + song.Author;
+
+
+            }
+            catch (Exception ex)
             {
                 statusText.Text = $"Status Error: {ex.Message}";
             } 
+
 
         }
     }

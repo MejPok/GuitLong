@@ -16,11 +16,6 @@ namespace GuitLong.Code.Models
         {
             json = CleanString();
 
-
-            
-
-
-
             return json;
         }
 

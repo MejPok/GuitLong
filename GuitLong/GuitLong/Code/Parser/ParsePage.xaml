@@ -22,16 +22,20 @@
             <Button Content="Submit" MaxWidth="100" Height="30" Click="SubmitUrl"/>
         </StackPanel>
 
-        <TextBox
-            Name="statusText"
-            Text="Status:"
-            IsReadOnly="True"
-            BorderThickness="0"
-            Background="Transparent"
-            TextWrapping="Wrap"
-            Padding="0"
-            Grid.Row="2"
-        />
+        <StackPanel Grid.Row="2">
+            <TextBox
+                Name="statusText"
+                Text="Status:"
+                IsReadOnly="True"
+                BorderThickness="0"
+                Background="Transparent"
+                TextWrapping="Wrap"
+                Padding="0"
+            />
+            
+            <TextBlock Name="songName" Text="Name:"/>
+            <TextBlock Name="songAuthor" Text="Author:"/>
+        </StackPanel>
 
     </Grid>
 </Page>
