@@ -35,6 +35,8 @@
             
             <TextBlock Name="songName" Text="Name:"/>
             <TextBlock Name="songAuthor" Text="Author:"/>
+            <Button Content="Convert to Song data" MaxWidth="150" Height="30" Click="ConvertSongData"/>
+
         </StackPanel>
 
     </Grid>

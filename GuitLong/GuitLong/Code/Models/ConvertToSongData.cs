@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -8,9 +9,18 @@ namespace GuitLong.Code.Models
     public class ConvertToSongData
     {
         public string json = "";
-        public ConvertToSongData(string _json) {
+        public ConvertToSongData(string _json = "") {
             json = _json;
         }
+        
+        public async Task<Song> CreateSongData(string _json, Song songBase) 
+        {
+            await File.WriteAllTextAsync($"{songBase.Title}.json", _json);
+
+            return songBase;
+
+        }
+
 
         public string TryConvert()
         {
@@ -18,8 +28,6 @@ namespace GuitLong.Code.Models
 
             return json;
         }
-
-
         public string CleanString()
         {
             string[] removeSubstrings = { "[tab]", "[/tab]", "[ch]", "[/ch]" };
@@ -32,7 +40,6 @@ namespace GuitLong.Code.Models
 
             return currentJson;
         }
-
         string RemovedFromString(string jsonProvided, string remove) 
         {
             for (int i = 0; i < jsonProvided.Length - remove.Length; i++)

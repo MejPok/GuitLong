@@ -8,14 +8,19 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Xml;
 
 namespace GuitLong.Code.Parser
 {
     public class WebScraper
     {
+        public string savedJson;
         private readonly HttpClient _httpClient;
 
         public WebScraper()
@@ -53,32 +58,228 @@ namespace GuitLong.Code.Parser
 
             string json = ExtractSongContent(html);
 
+            
+
             var converter = new ConvertToSongData(json);
             string converted = converter.TryConvert();
 
-            await File.WriteAllTextAsync("extractedNew.json", converted);
 
-            return findBasicInfo(html);
-        }
-
-        Song findBasicInfo(string html)
-        {
-            string pattern = @"<a[^>]*href=""https://www\.ultimate-guitar\.com/artist/[^""]+""[^>]*>(?<artist>.*?)</a>";
-
-            Match match = Regex.Match(html, pattern, RegexOptions.IgnoreCase);
-
-            string artistName = "Not found";
-            if (match.Success)
+            if (converted != null)
             {
-                artistName = match.Groups["artist"].Value;
+                savedJson = converted;
             }
 
+            await File.WriteAllTextAsync("extractedNew.html", html);
+
+            return findBasicInfo(document);
+        }
+
+        Song findBasicInfo(HtmlDocument html)
+        {
             var song = new Song();
 
-            song.Author = artistName;
+            var jsonScripts = html.DocumentNode.SelectNodes(
+                "//script[@type='application/ld+json']"
+            );
+
+            if (jsonScripts == null)
+                return song;
+
+            foreach (var script in jsonScripts)
+            {
+                try
+                {
+                    using var json = JsonDocument.Parse(script.InnerText);
+
+                    var root = json.RootElement;
+
+                    // JSON-LD can sometimes be an array of objects
+                    if (root.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var item in root.EnumerateArray())
+                        {
+                            if (TryExtractMusicComposition(item, song))
+                                return song;
+                        }
+                    }
+                    else
+                    {
+                        if (TryExtractMusicComposition(root, song))
+                            return song;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore invalid JSON-LD blocks
+                }
+            }
 
             return song;
         }
+
+
+        bool TryExtractMusicComposition(JsonElement root, Song song)
+        {
+            // Make sure this is a MusicComposition
+            if (!root.TryGetProperty("@type", out var typeElement))
+                return false;
+
+            bool isMusicComposition = false;
+
+            if (typeElement.ValueKind == JsonValueKind.String)
+            {
+                isMusicComposition =
+                    typeElement.GetString() == "MusicComposition";
+            }
+            else if (typeElement.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var type in typeElement.EnumerateArray())
+                {
+                    if (type.ValueKind == JsonValueKind.String &&
+                        type.GetString() == "MusicComposition")
+                    {
+                        isMusicComposition = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isMusicComposition)
+                return false;
+
+
+            // ==========================
+            // TITLE
+            // ==========================
+
+            if (root.TryGetProperty("name", out var nameElement) &&
+                nameElement.ValueKind == JsonValueKind.String)
+            {
+                string? name = nameElement.GetString();
+
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    // Example:
+                    // The Neighbourhood - Sweater Weather (chords)
+
+                    int dashIndex = name.IndexOf(" - ");
+
+                    if (dashIndex >= 0)
+                    {
+                        string title = name[(dashIndex + 3)..];
+
+                        // Remove "(chords)", "(tabs)", etc.
+                        int bracketIndex = title.IndexOf(" (");
+
+                        if (bracketIndex >= 0)
+                            title = title[..bracketIndex];
+
+                        song.Title = title.Trim();
+                    }
+                    else
+                    {
+                        song.Title = name.Trim();
+                    }
+                }
+            }
+
+
+            // ==========================
+            // AUTHOR
+            // ==========================
+
+            if (root.TryGetProperty("composer", out var composer))
+            {
+                song.Author = ExtractPersonName(composer);
+            }
+
+
+            // ==========================
+            // TEXT
+            // ==========================
+
+            if (root.TryGetProperty("text", out var textElement) &&
+                textElement.ValueKind == JsonValueKind.String)
+            {
+                string text = textElement.GetString() ?? "";
+
+                // Difficulty
+                var difficultyMatch = Regex.Match(
+                    text,
+                    @"Difficulty:\s*(.*?)\s+Tuning:",
+                    RegexOptions.IgnoreCase
+                );
+
+                if (difficultyMatch.Success)
+                {
+                    song.Difficulty =
+                        difficultyMatch.Groups[1].Value.Trim();
+                }
+
+
+                // Tuning
+                var tuningMatch = Regex.Match(
+                    text,
+                    @"Tuning:\s*(.*?)\s+Key:",
+                    RegexOptions.IgnoreCase
+                );
+
+                if (tuningMatch.Success)
+                {
+                    song.Tuning =
+                        tuningMatch.Groups[1].Value.Trim();
+                }
+
+
+                // Capo
+                var capoMatch = Regex.Match(
+                    text,
+                    @"Capo:\s*(\d+)",
+                    RegexOptions.IgnoreCase
+                );
+
+                if (capoMatch.Success &&
+                    int.TryParse(
+                        capoMatch.Groups[1].Value,
+                        out int capo))
+                {
+                    song.Capo = capo;
+                }
+            }
+
+            return true;
+        }
+
+
+        private string ExtractPersonName(JsonElement composer)
+        {
+            // composer is an object
+            if (composer.ValueKind == JsonValueKind.Object)
+            {
+                if (composer.TryGetProperty("name", out var name) &&
+                    name.ValueKind == JsonValueKind.String)
+                {
+                    return name.GetString()?.Trim() ?? "";
+                }
+            }
+
+            // composer is an array
+            if (composer.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var person in composer.EnumerateArray())
+                {
+                    if (person.ValueKind == JsonValueKind.Object &&
+                        person.TryGetProperty("name", out var name) &&
+                        name.ValueKind == JsonValueKind.String)
+                    {
+                        return name.GetString()?.Trim() ?? "";
+                    }
+                }
+            }
+
+            return "";
+        }
+
 
         private string ExtractSongContent(string html)
         {
@@ -106,5 +307,6 @@ namespace GuitLong.Code.Parser
 
             return WebUtility.HtmlDecode(encodedContent);
         }
+
     }
 }

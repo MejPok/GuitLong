@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GuitLong.Code.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
@@ -19,6 +20,8 @@ namespace GuitLong.Code.Parser
     /// </summary>
     public partial class ParsePage : Page
     {
+        public Song baseSongData;
+        public string jsonData;
         public ParsePage()
         {
             InitializeComponent();
@@ -28,11 +31,14 @@ namespace GuitLong.Code.Parser
         {
             try
             {
-                var song = new WebScraper().ScrapeSongAsync(urlText.Text).Result;
+                var scraper = new WebScraper();
+                var song = await scraper.ScrapeSongAsync(urlText.Text);
 
                 songName.Text = "Name: " + song.Title;
                 songAuthor.Text = "Author: " + song.Author;
 
+                baseSongData = song;
+                jsonData = scraper.savedJson;
 
             }
             catch (Exception ex)
@@ -41,6 +47,22 @@ namespace GuitLong.Code.Parser
             } 
 
 
+        }
+
+        private void ConvertSongData(object sender, RoutedEventArgs e)
+        {
+            if(baseSongData != null)
+            {
+                var converter = new ConvertToSongData(jsonData);
+
+                var convertedSong = converter.CreateSongData(jsonData, baseSongData);
+                
+
+            }
+            else
+            {
+                statusText.Text = "Status Error: No song data to convert. Please submit a URL first.";
+            }
         }
     }
 }
