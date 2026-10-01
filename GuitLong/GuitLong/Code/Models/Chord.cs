@@ -2,7 +2,7 @@
 {
     public class Chord
     {
-        public int CharacterPosition = 0;
+        public int CharacterPosition { get; set; } = 0;
         public string Name { get; set; } = "";
     }
 

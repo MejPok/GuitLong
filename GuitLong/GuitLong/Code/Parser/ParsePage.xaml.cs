@@ -64,5 +64,22 @@ namespace GuitLong.Code.Parser
                 statusText.Text = "Status Error: No song data to convert. Please submit a URL first.";
             }
         }
+
+        private void SaveSong(object sender, RoutedEventArgs e)
+        {
+            if (baseSongData != null)
+            {
+                var saver = new SongSaver();
+                bool isSaved = saver.SaveSong(baseSongData);
+                if (isSaved)
+                {
+                    statusText.Text = "Status: Song saved successfully.";
+                }
+            }
+            else
+            {
+                statusText.Text = "Status Error: No song data to save. Please submit a URL first.";
+            }
+        }
     }
 }
