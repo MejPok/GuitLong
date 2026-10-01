@@ -12,6 +12,7 @@ namespace GuitLong.Code.Models
         public int? Capo { get; set; }
         public string Difficulty { get; set; } = "";
         public string Tuning { get; set; } = "";
+        public List<string> Chords { get; set; } = new List<string>();
 
         public List<Section> Sections { get; set; } = new List<Section>();
     }

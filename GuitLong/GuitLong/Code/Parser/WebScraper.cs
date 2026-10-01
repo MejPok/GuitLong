@@ -7,6 +7,7 @@ using System.Net;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json;
@@ -56,9 +57,9 @@ namespace GuitLong.Code.Parser
 
             var document = ParseHtml(html);
 
-            string json = ExtractSongContent(html);
-
             
+
+            string json = ExtractSongContent(html);
 
             var converter = new ConvertToSongData(json);
             string converted = converter.TryConvert();
@@ -80,10 +81,13 @@ namespace GuitLong.Code.Parser
 
             var jsonScripts = html.DocumentNode.SelectNodes(
                 "//script[@type='application/ld+json']"
+
             );
 
             if (jsonScripts == null)
                 return song;
+
+            var nodes = html.DocumentNode.SelectNodes("//*[@class='cnfqk']");
 
             foreach (var script in jsonScripts)
             {
