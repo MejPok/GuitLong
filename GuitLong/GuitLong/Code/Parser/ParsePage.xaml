@@ -37,6 +37,7 @@
             <TextBlock Name="songAuthor" Text="Author:"/>
             <Button Content="Convert to Song data" MaxWidth="150" Height="30" Click="ConvertSongData"/>
             <Button Content="Save Song" MaxWidth="150" Height="30" Click="SaveSong"/>
+            <TextBox Name="nameInput" Width="400"/>
 
         </StackPanel>
 

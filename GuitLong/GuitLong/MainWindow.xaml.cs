@@ -1,4 +1,5 @@
-﻿using GuitLong.Code.Parser;
+﻿using GuitLong.Code.Pages;
+using GuitLong.Code.Parser;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,5 +31,10 @@ namespace GuitLong
             MainFrame.Navigate(new ParsePage());
         }
 
+        private void LoadSongs(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new LoadSong());
+
+        }
     }
 }
