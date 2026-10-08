@@ -22,8 +22,9 @@ namespace GuitLong.Code.Models
 
 
                 string json = System.Text.Json.JsonSerializer.Serialize(saveSong);
+                string songName = $"Saved_{saveSong.Title}_{additionalName}.json";
 
-                System.IO.File.WriteAllText($"Saved_{saveSong.Title}_{additionalName}.json", json);
+                System.IO.File.WriteAllText(Path.Combine(savedSongsFolder, songName), json);
                 return true;
             }
             catch (Exception ex)

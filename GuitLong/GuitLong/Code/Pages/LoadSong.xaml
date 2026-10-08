@@ -13,7 +13,7 @@
             <RowDefinition Height="301*"/>
             <RowDefinition Height="149*"/>
         </Grid.RowDefinitions>
-        <ListView Grid.Row="0">
+        <ListView Grid.Row="0" Name="songsView">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Song Name" Width="200"/>
