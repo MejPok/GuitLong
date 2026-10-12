@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SongView">
 
-    <Grid Name="songGrid">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="21*"/>
             <RowDefinition Height="391*"/>
@@ -16,6 +16,10 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="Song Title" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Name="songTitle"/>
+
+        <Grid Grid.Row="1" Name="songGrid">
+            
+        </Grid>
 
         <Rectangle Grid.Row="2" Fill="LightGray"/>
         <Button Grid.Row="2" Content="0" Click="PowerButton" Width="40" Height="40"/>
