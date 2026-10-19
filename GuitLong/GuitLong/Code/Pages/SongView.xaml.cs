@@ -56,32 +56,47 @@ namespace GuitLong.Code.Pages
             {
                 GenerateSections(section, ref rowContents);
             });
+
+            for(int i = 0; i < rowContents.Count; i++)
+            {
+                var row = new RowDefinition();
+                row.MinHeight = 30;
+                songGrid.RowDefinitions.Add(row);
+
+                Grid.SetRow(rowContents[i], i);
+                songGrid.Children.Add(rowContents[i]);
+            }
+
         }
 
         void GenerateSections(Models.Section section, ref List<TextBlock> rowContents)
         {
+            var blockAlign = HorizontalAlignment.Left;
+            var textAlign = TextAlignment.Left;
+            var fontFamily = new FontFamily("Courier New");
 
             var row = new TextBlock();
             row.Text = section.Name;
-            row.HorizontalAlignment = HorizontalAlignment.Center;
-            row.Width = 300;
-            row.FontSize = 25; 
+            row.HorizontalAlignment = blockAlign;
+            row.TextAlignment = textAlign;
+            row.FontSize = 30; 
+
+            row.FontFamily = fontFamily;
             rowContents.Add(row);
 
             foreach (var rowItem in section.Rows)
             {
                 var rowTextBlock = new TextBlock();
-
-                string chordText =  
-                String.Concat(Enumerable.Repeat(" ", rowItem.Chords[rowItem.Chords.Count - 1].CharacterPosition));
-
-                foreach (var chord in rowItem.Chords)
+                if (rowItem.Chords.Count == 0)
                 {
-                    chordText = chordText.Remove(chord.CharacterPosition, chord.Name.Length).Insert(chord.CharacterPosition, chord.Name);
+                    continue;
                 }
 
-                rowTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-                rowTextBlock.Width = 300;
+
+                rowTextBlock.Text = rowItem.GetChordText();
+                rowTextBlock.HorizontalAlignment = blockAlign;
+                rowTextBlock.TextAlignment = textAlign;
+                rowTextBlock.FontFamily = fontFamily;
                 rowTextBlock.FontSize = 20;
                 rowContents.Add(rowTextBlock);
 
@@ -89,9 +104,11 @@ namespace GuitLong.Code.Pages
                 var lyrics = new TextBlock();
                 
 
-                lyrics.HorizontalAlignment = HorizontalAlignment.Center;
-                lyrics.Width = 300;
+                lyrics.HorizontalAlignment = blockAlign;
+                lyrics.TextAlignment = textAlign;
+                lyrics.FontFamily = fontFamily;
                 lyrics.FontSize = 20;
+                lyrics.Text = rowItem.GetLyricsText();
                 rowContents.Add(lyrics);
 
 

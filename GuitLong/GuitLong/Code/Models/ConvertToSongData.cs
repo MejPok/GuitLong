@@ -30,6 +30,7 @@ namespace GuitLong.Code.Models
             string[] rows = _json.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             int startIndex = 0;
             int endIndex = _json.IndexOf("[", startIndex) - 1;
+
             for(int i = 0; i < rows.Length; i++)
             {
                 string row = rows[i].Trim();
@@ -53,10 +54,9 @@ namespace GuitLong.Code.Models
                 }
 
             }
-
-
             return songBase;
         }
+
         public async Task<Song> findRows(string _json, Song songBase)
         {
             foreach(var section in songBase.Sections)

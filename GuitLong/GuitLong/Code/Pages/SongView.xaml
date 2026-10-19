@@ -17,10 +17,12 @@
 
         <TextBlock Text="Song Title" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Name="songTitle"/>
 
-        <Grid Grid.Row="1" Name="songGrid">
-            
-        </Grid>
-
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden">
+            <Grid Name="songGrid">
+                
+            </Grid>
+        </ScrollViewer>
+        
         <Rectangle Grid.Row="2" Fill="LightGray"/>
         <Button Grid.Row="2" Content="0" Click="PowerButton" Width="40" Height="40"/>
 
