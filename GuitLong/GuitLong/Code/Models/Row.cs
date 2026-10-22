@@ -18,12 +18,12 @@
                 chordText = newText;
             }
 
-            return chordText + " " + chordText.Length;
+            return chordText;
         }
 
         public string GetLyricsText()
         {
-            return Lyrics + $" {Lyrics.Length}";
+            return Lyrics;
         }
     }
 

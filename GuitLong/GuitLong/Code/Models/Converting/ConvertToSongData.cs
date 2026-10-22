@@ -64,8 +64,10 @@ namespace GuitLong.Code.Models.Converting
 
         public async Task<Song> findRows(string _json, Song songBase)
         {
-            foreach(var section in songBase.Sections)
+            Section sectionForReference;
+            foreach (var section in songBase.Sections)
             {
+                sectionForReference = section;
                 int startIndex = _json.IndexOf(section.Name) + section.Name.Length;
                 int endIndex = _json.IndexOf("[", startIndex) - 1;
 
@@ -75,64 +77,85 @@ namespace GuitLong.Code.Models.Converting
                 }
 
                 string sectionContent = _json.Substring(startIndex, endIndex - startIndex);
+
                 string[] rows = sectionContent.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
                 List<Chord> lastRowChords = new List<Chord>();
+                
                 foreach (var row in rows)
                 {
-                    if(row.Trim().Length == 0)
-                    {
-                        continue;
-                    }
-                    bool isChordRow = false;
-
-                    foreach (var chordsFound in songBase.Chords)
-                    {
-                        if ((" " + row + " ").Contains($" {chordsFound} "))
-                        {
-                            isChordRow = true;
-                            
-                        }
-                    }
-
-                    if (isChordRow)
-                    {
-                        
-                        List<Chord> chordsInRow = new List<Chord>();
-
-                        for (int i = 0; i < row.Length; i++)
-                        {
-                            foreach (var chord in songBase.Chords)
-                            {
-                                if (row.Substring(i).StartsWith(chord + " "))
-                                {
-                                    Chord newChord = new Chord
-                                    {
-                                        Name = chord,
-                                        CharacterPosition = i
-                                    };
-                                    chordsInRow.Add(newChord);
-                                }
-                            }
-                        }
-
-                        lastRowChords = chordsInRow;
-
-                        continue;
-
-                    }
-                    Row newRow = new Row
-                        {
-                            Chords = (List<Chord>)lastRowChords,
-                            Lyrics = row.Trim()
-                        };
-                    
-                    
-                    section.Rows.Add(newRow);
+                    rowFindChords(row, ref songBase, ref lastRowChords, ref sectionForReference);
                 }
 
             }
             return songBase;
+        }
+
+
+        void rowFindChords(string row, ref Song songBase, ref List<Chord> lastRowChords, ref Section sectionForReference)
+        {
+            if (row.Trim().Length == 0)
+            {
+                return;
+            }
+
+            //kontrola jestli je to chords radek
+            bool isChordRow = false;
+            foreach (var chordsFound in songBase.Chords)
+            {
+                if ((" " + row + " ").Contains($" {chordsFound} "))
+                {
+                    isChordRow = true;
+                }
+            } 
+
+
+            if (isChordRow)
+            {
+                List<Chord> chordsInRow = new List<Chord>(); //uchova nalezene akordy v radku
+
+                bool readingChord = false;
+                string readChord = "";
+
+                row += " "; //pridani mezery na konec radku pro spravne ukonceni posledniho akordu
+                for (int i = 0; i < row.Length; i++)
+                {
+                    if (row[i] == ' ')
+                    {
+                        if(readingChord)
+                        {
+                            readingChord = false;
+
+                            Chord newChord = new Chord
+                            {
+                                Name = readChord,
+                                CharacterPosition = i - readChord.Length
+                            };
+                            chordsInRow.Add(newChord);
+
+                            readChord = "";
+                        }
+                    } else
+                    {
+                        readingChord = true;
+                        readChord += row[i];
+                    }
+                }
+
+                lastRowChords = chordsInRow;
+
+                return;
+
+            }
+
+            Row newRow = new Row
+            {
+                Chords = (List<Chord>)lastRowChords,
+                Lyrics = row.Trim()
+            };
+
+
+            sectionForReference.Rows.Add(newRow);
         }
         public async Task<Song> findSections(string _json, Song songBase)
         {

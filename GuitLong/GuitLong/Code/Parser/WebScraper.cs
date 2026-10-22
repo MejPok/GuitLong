@@ -1,4 +1,5 @@
 ﻿using GuitLong.Code.Models;
+using GuitLong.Code.Models.Converting;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
