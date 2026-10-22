@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GuitLong.Code.Models
+namespace GuitLong.Code.Models.Converting
 {
     public class ConvertToSongData
     {
@@ -18,7 +18,7 @@ namespace GuitLong.Code.Models
         {
             await File.WriteAllTextAsync($"{songBase.Title}.json", _json);
             
-            songBase = await findUsedChords(_json, songBase);
+            songBase = await findUsedChords(_json, songBase); // hleda prvni radky jsonu
             songBase = await findSections(_json, songBase);
             songBase = await findRows(_json, songBase);
 
@@ -28,12 +28,17 @@ namespace GuitLong.Code.Models
         public async Task<Song> findUsedChords(string _json, Song songBase)
         {
             string[] rows = _json.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
             int startIndex = 0;
+
             int endIndex = _json.IndexOf("[", startIndex) - 1;
+
+            //hleda to prvni radky dokud to nenajde prvni sekci
 
             for(int i = 0; i < rows.Length; i++)
             {
                 string row = rows[i].Trim();
+
                 if (row.Length == 0)
                 {
                     continue;
@@ -99,7 +104,7 @@ namespace GuitLong.Code.Models
                         {
                             foreach (var chord in songBase.Chords)
                             {
-                                if (row.Substring(i).StartsWith(chord))
+                                if (row.Substring(i).StartsWith(chord + " "))
                                 {
                                     Chord newChord = new Chord
                                     {
@@ -110,6 +115,7 @@ namespace GuitLong.Code.Models
                                 }
                             }
                         }
+
                         lastRowChords = chordsInRow;
 
                         continue;
@@ -131,6 +137,7 @@ namespace GuitLong.Code.Models
         public async Task<Song> findSections(string _json, Song songBase)
         {
             int lastIndex = 0;
+
             for (int i = 0; i < _json.Length; i++)
             {
                 if (_json[i] == '[')

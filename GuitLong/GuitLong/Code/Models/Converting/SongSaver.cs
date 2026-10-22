@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 
-namespace GuitLong.Code.Models
+namespace GuitLong.Code.Models.Converting
 {
     internal class SongSaver
     {

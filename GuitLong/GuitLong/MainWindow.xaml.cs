@@ -24,6 +24,16 @@ namespace GuitLong
             InitializeComponent();
             this.DataContext = this;
             Instance = this;
+            CreateSongFolder();
+        }
+
+        void CreateSongFolder()
+        {
+            string songFolderPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "SavedSongs");
+            if (!System.IO.Directory.Exists(songFolderPath))
+            {
+                System.IO.Directory.CreateDirectory(songFolderPath);
+            }
         }
 
         private async void ImportNewSong(object sender, RoutedEventArgs e)

@@ -1,4 +1,4 @@
-﻿namespace GuitLong.Code.Models
+﻿namespace GuitLong.Code.Models.Strumming
 {
     public class StrummingPattern
     {

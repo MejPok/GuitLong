@@ -1,6 +1,7 @@
 ﻿using GuitLong.Code.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows;
@@ -69,19 +70,16 @@ namespace GuitLong.Code.Pages
 
         }
 
+        HorizontalAlignment blockAlign = HorizontalAlignment.Left;
+        TextAlignment textAlign = TextAlignment.Left;
+        System.Windows.Media.FontFamily fontFamily = new System.Windows.Media.FontFamily("Courier New");
         void GenerateSections(Models.Section section, ref List<TextBlock> rowContents)
         {
-            var blockAlign = HorizontalAlignment.Left;
-            var textAlign = TextAlignment.Left;
-            var fontFamily = new FontFamily("Courier New");
-
             var row = new TextBlock();
             row.Text = section.Name;
-            row.HorizontalAlignment = blockAlign;
-            row.TextAlignment = textAlign;
-            row.FontSize = 30; 
+            
+            ConfigureTextBlock(ref row);
 
-            row.FontFamily = fontFamily;
             rowContents.Add(row);
 
             foreach (var rowItem in section.Rows)
@@ -94,26 +92,29 @@ namespace GuitLong.Code.Pages
 
 
                 rowTextBlock.Text = rowItem.GetChordText();
-                rowTextBlock.HorizontalAlignment = blockAlign;
-                rowTextBlock.TextAlignment = textAlign;
-                rowTextBlock.FontFamily = fontFamily;
-                rowTextBlock.FontSize = 20;
+                ConfigureTextBlock(ref rowTextBlock);
                 rowContents.Add(rowTextBlock);
 
 
                 var lyrics = new TextBlock();
                 
 
-                lyrics.HorizontalAlignment = blockAlign;
-                lyrics.TextAlignment = textAlign;
-                lyrics.FontFamily = fontFamily;
-                lyrics.FontSize = 20;
+                ConfigureTextBlock(ref lyrics);
                 lyrics.Text = rowItem.GetLyricsText();
                 rowContents.Add(lyrics);
 
 
             }
 
+        }
+
+        void ConfigureTextBlock(ref TextBlock textBlock)
+        {
+            textBlock.HorizontalAlignment = blockAlign;
+            textBlock.TextAlignment = textAlign;
+            textBlock.FontFamily = fontFamily;
+            textBlock.FontSize = 20;
+            textBlock.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
         }
     }
 }
