@@ -58,8 +58,7 @@ namespace GuitLong.Code.Parser
 
             var document = ParseHtml(html);
 
-            
-
+           
             string json = ExtractSongContent(html);
 
             var converter = new ConvertToSongData(json);

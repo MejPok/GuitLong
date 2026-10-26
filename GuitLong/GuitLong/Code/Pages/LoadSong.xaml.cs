@@ -74,5 +74,37 @@ namespace GuitLong.Code.Pages
                 MessageBox.Show("Please select a song to load.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
+        private void EditSong_Click(object sender, RoutedEventArgs e)
+        {
+            if (songsView.SelectedItem != null)
+            {
+                string selectedSong = songsView.SelectedItem.ToString();
+                string savedSongsFolder = System.IO.Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "SavedSongs"
+                );
+                string songFilePath = System.IO.Path.Combine(savedSongsFolder, selectedSong);
+
+                if (File.Exists(songFilePath))
+                {
+                    string json = File.ReadAllText(songFilePath);
+                    Song loadedSong = System.Text.Json.JsonSerializer.Deserialize<Song>(json);
+
+                    EditSong songPage = new EditSong(loadedSong);
+                    NavigationService.Navigate(songPage);
+                }
+                else
+                {
+                    MessageBox.Show("Selected song file does not exist.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a song to load.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+
     }
 }

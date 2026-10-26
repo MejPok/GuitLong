@@ -10,19 +10,26 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="137*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="30*"/>
             <RowDefinition Height="137*"/>
         </Grid.RowDefinitions>
+
         <TextBlock Text="Import New Song" FontSize="50" HorizontalAlignment="Center"/>
-        
-        <StackPanel Grid.Row="1">
-            <TextBlock Text="Enter URL:" HorizontalAlignment="Center"/>
-            <TextBox MaxWidth="500" Height="30" Text="" Name="urlText" />
-            <Button Content="Submit" MaxWidth="100" Height="30" Click="SubmitUrl"/>
+
+        <StackPanel Grid.Row="1" Margin="20, 0, 0, 0">
+            <TextBlock Text="Enter URL:" HorizontalAlignment="Left"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="299*"/>
+                    <ColumnDefinition Width="101*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Height="30" Text="" Name="urlText" HorizontalAlignment="Left" MaxWidth="600" Width="600" Margin="10, 0, 10, 0"/>
+                <Button Content="Submit" MaxWidth="100" Height="30" Click="SubmitUrl" Grid.Column="1" Margin="0,5,0,5"/>
+            </Grid>
         </StackPanel>
 
-        <StackPanel Grid.Row="2">
+        <StackPanel Grid.Row="2" Margin="20, 0, 0, 0">
             <TextBox
                 Name="statusText"
                 Text="Status:"
@@ -32,12 +39,27 @@
                 TextWrapping="Wrap"
                 Padding="0"
             />
-            
+
             <TextBlock Name="songName" Text="Name:"/>
             <TextBlock Name="songAuthor" Text="Author:"/>
-            <Button Content="Convert to Song data" MaxWidth="150" Height="30" Click="ConvertSongData"/>
-            <Button Content="Save Song" MaxWidth="150" Height="30" Click="SaveSong"/>
-            <TextBox Name="nameInput" Width="400"/>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Button Content="Convert to Song data" MaxWidth="150" Height="30" Click="ConvertSongData" Grid.Column="0" Grid.Row="0"/>
+                <Button Content="Save Song" MaxWidth="150" Height="30" Click="SaveSong" Grid.Column="1" Grid.Row="0"/>
+
+                <TextBlock Text="Custom Name:" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,10,0,0" />
+                <TextBox Name="nameInput" Width="400" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,10,0,0"/>
+            </Grid>
 
         </StackPanel>
 

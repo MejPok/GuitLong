@@ -44,7 +44,6 @@ namespace GuitLong
         private void LoadSongs(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new LoadSong());
-
         }
     }
 }

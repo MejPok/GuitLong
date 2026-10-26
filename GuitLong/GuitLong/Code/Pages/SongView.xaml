@@ -18,7 +18,7 @@
         <TextBlock Text="Song Title" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Name="songTitle"/>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden">
-            <Grid Name="songGrid">
+            <Grid Name="songGrid" Margin="10,0,0,0">
                 
             </Grid>
         </ScrollViewer>
