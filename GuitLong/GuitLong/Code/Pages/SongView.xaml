@@ -5,26 +5,40 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GuitLong.Code.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="1200" d:DesignWidth="1800"
       Title="SongView">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="449*"/>
+            <ColumnDefinition Width="451*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="21*"/>
             <RowDefinition Height="391*"/>
             <RowDefinition Height="37*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Song Title" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Name="songTitle"/>
+        <TextBlock Text="Song Title" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Name="songTitle" Grid.ColumnSpan="2" Margin="843,0,0,0"/>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden">
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" Grid.Column="0" Margin="0,56,0,0" Grid.RowSpan="2" >
             <Grid Name="songGrid" Margin="10,0,0,0">
-                
+
             </Grid>
         </ScrollViewer>
-        
-        <Rectangle Grid.Row="2" Fill="LightGray"/>
-        <Button Grid.Row="2" Content="0" Click="PowerButton" Width="40" Height="40"/>
+
+        <Grid Grid.Row="1" Grid.Column="1" Name="strumGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100*"/>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="100*"/>
+            </Grid.RowDefinitions>
+
+            
+        </Grid>
+
+        <Rectangle Grid.Row="2" Fill="LightGray" Grid.ColumnSpan="2" />
+        <Button Grid.Row="2" Content="0" Click="PowerButton" Width="40" Height="40" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
     </Grid>
 </Page>

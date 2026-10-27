@@ -32,7 +32,8 @@ namespace GuitLong.Code.Pages
         }
 
         List<TextBlock> sectionTextBlocks = new List<TextBlock>();
-        List<TextBox> sectionTextBoxes = new List<TextBox>();
+        List<TextBox> sectionStrummingTextBoxes = new List<TextBox>();
+        List<TextBox> sectionBPMTextBoxes = new List<TextBox>();
 
 
         void PopulateSectionNames()
@@ -78,16 +79,16 @@ namespace GuitLong.Code.Pages
 
             foreach (var section in song.Sections)
             {
-                sectionTextBoxes.Add(createSectionStrum(section.Name));
+                sectionStrummingTextBoxes.Add(createSectionStrum(section.Name));
             }
 
 
-            for (int i = 0; i < sectionTextBoxes.Count; i++)
+            for (int i = 0; i < sectionStrummingTextBoxes.Count; i++)
             {
-                Grid.SetColumn(sectionTextBoxes[i], 1);
-                Grid.SetRow(sectionTextBoxes[i], i + 1);
+                Grid.SetColumn(sectionStrummingTextBoxes[i], 1);
+                Grid.SetRow(sectionStrummingTextBoxes[i], i + 1);
 
-                strumGrid.Children.Add(sectionTextBoxes[i]);
+                strumGrid.Children.Add(sectionStrummingTextBoxes[i]);
             }
         }
         public TextBox createSectionStrum(string name, int width = 30)
@@ -109,7 +110,6 @@ namespace GuitLong.Code.Pages
             sectionStrum.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(1, 1, 1));
             return sectionStrum;
         }
-        List<TextBox> sectionBPMTextBoxes = new List<TextBox>();
         void PopulateSectionBPM()
         {
             var strumGrid = SectionStrum;
@@ -133,17 +133,15 @@ namespace GuitLong.Code.Pages
 
         private void SaveStrum(object sender, RoutedEventArgs e)
         {
-            for(int i = 0; i < sectionTextBoxes.Count; i++)
+            for(int i = 0; i < sectionStrummingTextBoxes.Count; i++)
             {
-                var sectionName = sectionTextBoxes[i].Tag.ToString();
-                var sectionStrum = sectionTextBoxes[i].Text;
+                var sectionName = sectionStrummingTextBoxes[i].Tag.ToString();
+                var sectionStrum = sectionStrummingTextBoxes[i].Text;
                 var sectionBPM = sectionBPMTextBoxes[i].Text;
                 var section = song.Sections.Find(s => s.Name == sectionName);
+
                 if (section != null)
                 {
-                    var strum = new Strum();
-                    strum.Beat = 0; // Set the beat to 0 or any other value you want
-                    section.Strumming.Strums.Add(strum);
                     if (int.TryParse(sectionBPM, out int bpm))
                     {
                         section.Strumming.BPM = bpm;
@@ -160,19 +158,19 @@ namespace GuitLong.Code.Pages
 
         List<Strum> loadStrums(string strum)
         {
-            string[] strums = strum.Split(' ');
             var result = new List<Strum>();
             double beat = 0;
-            foreach (var s in strums)
+
+            foreach (var s in strum.ToArray())
             {
-                if (s == "D" || s == "d")
+                if (s == 'D' || s == 'd')
                 {
                     result.Add(new Strum() { Direction = StrumDirection.Down, Beat = beat});
                 }
-                else if (s == "U" || s == "u")
+                else if (s == 'U' || s == 'u')
                 {
                     result.Add(new Strum() { Direction = StrumDirection.Up, Beat = beat });
-                } else if(s == "-")
+                } else if(s == '-')
                 {
                     result.Add(new Strum() { Direction = StrumDirection.None, Beat = beat });
                 }

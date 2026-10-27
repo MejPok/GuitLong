@@ -25,12 +25,90 @@ namespace GuitLong.Code.Pages
         public delegate void ButtonHandler(bool state);
         public event ButtonHandler PowerButtonClicked;
         public Song song;
+        public int currentSectionIndex = 0;
+        public int currentRowIndex = 0;
+        public int currentChordIndex = 0;
+        public int currentStrumIndex = 0;
+
         public SongView(Song song)
         {
             InitializeComponent();
+            App.Current.MainWindow.Width = 1800;
+            App.Current.MainWindow.Height = 1200;
+
             this.song = song;
             songTitle.Text = song.Title;
+            songTitle.FontSize = 40;
             GenerateAllRows();
+            CreateStrummingHelpUI();
+        }
+
+        public List<TextBlock> strumDirUIList = new List<TextBlock>();
+        void CreateStrummingHelpUI()
+        {
+            for(int i = 0; i < song.Sections[currentSectionIndex].Strumming.Strums.Count; i++)
+            {
+                TextBlock strumDirUI = new TextBlock();
+                strumDirUI.Tag = i;
+                if (song.Sections[currentSectionIndex].Strumming.Strums[i].Direction == Models.Strumming.StrumDirection.Down)
+                {
+                    strumDirUI.Text = "↓";
+
+                }
+                else if (song.Sections[currentSectionIndex].Strumming.Strums[i].Direction == Models.Strumming.StrumDirection.Up)
+                {
+                    strumDirUI.Text = "↑";
+                }
+                else if (song.Sections[currentSectionIndex].Strumming.Strums[i].Direction == Models.Strumming.StrumDirection.None)
+                {
+                    strumDirUI.Text = "-";
+                } else
+                {
+                    strumDirUI.Text = ".";
+                }
+
+                strumDirUI.Width = 120;
+                strumDirUI.Height = 120;
+                strumDirUI.FontSize = 80;
+                strumDirUI.HorizontalAlignment = HorizontalAlignment.Left;
+
+                strumDirUI.Margin = new Thickness(i * 50 + 150, 0, 0, 0);
+
+                Grid.SetRow(strumDirUI, 1);
+                strumGrid.Children.Add(strumDirUI);
+
+                strumDirUIList.Add(strumDirUI);
+            }
+
+            TextBlock strumChordUI = new TextBlock();
+            strumChordUI.Name = "strumChordUI";
+
+            if(selectedSongElementExists(currentSectionIndex, currentRowIndex, currentChordIndex))
+            {
+                strumChordUI.Text = song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords[currentChordIndex].Name;
+            }
+
+            strumChordUI.HorizontalAlignment = HorizontalAlignment.Center;
+            strumChordUI.VerticalAlignment = VerticalAlignment.Center;
+
+            Grid.SetRow(strumChordUI, 0);
+            strumGrid.Children.Add(strumChordUI);
+
+        }
+
+        bool selectedSongElementExists(int section = 0, int row = 0, int chord = 0)
+        {
+            if(song.Sections.Count > section)
+            {
+                if (song.Sections[section].Rows.Count > row)
+                {
+                    if (song.Sections[section].Rows[row].Chords.Count > chord)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private void PowerButton(object sender, RoutedEventArgs e)
@@ -65,6 +143,8 @@ namespace GuitLong.Code.Pages
                 songGrid.RowDefinitions.Add(row);
 
                 Grid.SetRow(rowContents[i], i);
+                Grid.SetColumn(rowContents[i], 0);
+
                 songGrid.Children.Add(rowContents[i]);
             }
 
@@ -113,6 +193,7 @@ namespace GuitLong.Code.Pages
             textBlock.HorizontalAlignment = blockAlign;
             textBlock.TextAlignment = textAlign;
             textBlock.FontFamily = fontFamily;
+            textBlock.HorizontalAlignment = HorizontalAlignment.Center;
             textBlock.FontSize = 20;
             textBlock.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
         }
