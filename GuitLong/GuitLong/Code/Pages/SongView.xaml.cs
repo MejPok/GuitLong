@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GuitLong.Code.Pages
 {
@@ -30,6 +32,9 @@ namespace GuitLong.Code.Pages
         public int currentChordIndex = 0;
         public int currentStrumIndex = 0;
 
+        public float beatTime = 0.0f;
+        private PausableTickTimer _timer;
+
         public SongView(Song song)
         {
             InitializeComponent();
@@ -41,9 +46,27 @@ namespace GuitLong.Code.Pages
             songTitle.FontSize = 40;
             GenerateAllRows();
             CreateStrummingHelpUI();
+
+
+            
+
+            _timer = new PausableTickTimer(TimeSpan.FromMilliseconds(beatTime));
+            _timer.Tick += Timer_Tick;
+            _timer.Pause();
+
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            nextStrum(sender, new RoutedEventArgs());
+            if(selectedSongElementExists(currentSectionIndex, currentRowIndex, currentChordIndex))
+            {
+                stateInfo.Text = $"Section: {currentSectionIndex + 1}/{song.Sections.Count}, Row: {currentRowIndex + 1}/{song.Sections[currentSectionIndex].Rows.Count}, Chord: {currentChordIndex + 1}/{song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count}, Strum: {currentStrumIndex + 1}/{song.Sections[currentSectionIndex].Strumming.Strums.Count}";
+            }
         }
 
         public List<TextBlock> strumDirUIList = new List<TextBlock>();
+
         void CreateStrummingHelpUI()
         {
             for(int i = 0; i < song.Sections[currentSectionIndex].Strumming.Strums.Count; i++)
@@ -82,8 +105,12 @@ namespace GuitLong.Code.Pages
 
             TextBlock strumChordUI = new TextBlock();
             strumChordUI.Name = "strumChordUI";
+            strumChordUI.Width = 120;
+            strumChordUI.Height = 120;
+            strumChordUI.FontSize = 40;
 
-            if(selectedSongElementExists(currentSectionIndex, currentRowIndex, currentChordIndex))
+
+            if (selectedSongElementExists(currentSectionIndex, currentRowIndex, currentChordIndex))
             {
                 strumChordUI.Text = song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords[currentChordIndex].Name;
             }
@@ -118,14 +145,29 @@ namespace GuitLong.Code.Pages
             if(isPlaying)
             {
                 ((Button)sender).Content = "1";
-                PowerButtonClicked?.Invoke(true);
+                SetButtonState();
             }
             else
             {
                 ((Button)sender).Content = "0";
-                PowerButtonClicked?.Invoke(false);
+                SetButtonState();
             }
         }
+
+        void SetButtonState() 
+        {
+            if (isPlaying)
+            {
+                PowerButtonClicked?.Invoke(true);
+                _timer.Resume();
+            }
+            else
+            {
+                PowerButtonClicked?.Invoke(false);
+                _timer.Pause();
+            }
+        }
+
 
         void GenerateAllRows()
         {
@@ -150,6 +192,7 @@ namespace GuitLong.Code.Pages
 
         }
 
+
         HorizontalAlignment blockAlign = HorizontalAlignment.Left;
         TextAlignment textAlign = TextAlignment.Left;
         System.Windows.Media.FontFamily fontFamily = new System.Windows.Media.FontFamily("Courier New");
@@ -165,11 +208,12 @@ namespace GuitLong.Code.Pages
             foreach (var rowItem in section.Rows)
             {
                 var rowTextBlock = new TextBlock();
+
                 if (rowItem.Chords.Count == 0)
                 {
                     continue;
                 }
-
+                
 
                 rowTextBlock.Text = rowItem.GetChordText();
                 ConfigureTextBlock(ref rowTextBlock);
@@ -197,5 +241,76 @@ namespace GuitLong.Code.Pages
             textBlock.FontSize = 20;
             textBlock.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
         }
+
+        void ReloadSongStrumming()
+        {
+            if(currentSectionIndex >= song.Sections.Count)
+            {
+                return;
+            }
+            beatTime = (float)60000 / (float)song.Sections[currentSectionIndex].Strumming.BPM / (float)2;
+            _timer.SetInterval(TimeSpan.FromMilliseconds(beatTime));
+            strumGrid.Children.Clear();
+            strumDirUIList.Clear();
+            CreateStrummingHelpUI();
+        }
+
+
+        private void nextSectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentSectionIndex++;
+            currentRowIndex = 0;
+            currentChordIndex = 0;
+            currentStrumIndex = 0;
+
+            if (currentSectionIndex >= song.Sections.Count)
+            {
+                isPlaying = !isPlaying;
+                SetButtonState();
+                MessageBox.Show("song finished");
+                return;
+            }
+            ReloadSongStrumming();
+        }
+
+        private void nextRowButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentRowIndex++;
+            currentChordIndex = 0;
+            currentStrumIndex = 0;
+
+            if (currentRowIndex >= song.Sections[currentSectionIndex].Rows.Count)
+            {
+                currentRowIndex = 0;
+                nextSectionButton_Click(sender, e);
+            }
+            ReloadSongStrumming();
+        }
+
+        private void nextChordButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentChordIndex++;
+            currentStrumIndex = 0;
+            
+            if (currentChordIndex >= song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count)
+            {
+                currentChordIndex = 0;
+                nextRowButton_Click(sender, e);
+            }
+            ReloadSongStrumming();
+        }
+
+        private void nextStrum(object sender, RoutedEventArgs e)
+        {
+            currentStrumIndex++;
+            if (currentStrumIndex >= song.Sections[currentSectionIndex].Strumming.Strums.Count)
+            {
+                currentStrumIndex = 0;
+                nextChordButton_Click(sender, e);
+            }
+            ReloadSongStrumming();
+        }
+
+
     }
 }

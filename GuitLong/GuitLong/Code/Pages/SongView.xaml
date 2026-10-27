@@ -38,7 +38,14 @@
         </Grid>
 
         <Rectangle Grid.Row="2" Fill="LightGray" Grid.ColumnSpan="2" />
-        <Button Grid.Row="2" Content="0" Click="PowerButton" Width="40" Height="40" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="2" Text="Strumming Help" HorizontalAlignment="Center" VerticalAlignment="Center" Name="stateInfo"/>
+
+            <Button Grid.Row="2" Content="0" Click="PowerButton" Width="40" Height="40" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button Grid.Row="2" Content="next section" Click="nextSectionButton_Click" Width="80" Height="40" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="150,0,0,0"/>
+        <Button Grid.Row="2" Content="next row" Click="nextRowButton_Click" Width="80" Height="40" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="300,0,0,0"/>
+        <Button Grid.Row="2" Content="next chord" Click="nextChordButton_Click"  Width="80" Height="40" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="450,0,0,0"/>
+
+
 
     </Grid>
 </Page>
