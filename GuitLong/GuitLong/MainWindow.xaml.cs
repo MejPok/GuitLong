@@ -41,6 +41,11 @@ namespace GuitLong
             MainFrame.Navigate(new ParsePage());
         }
 
+        private async void ExportSong(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new ExportPage());
+        }
+
         private void LoadSongs(object sender, RoutedEventArgs e)
         {
             MainFrame.Navigate(new LoadSong());

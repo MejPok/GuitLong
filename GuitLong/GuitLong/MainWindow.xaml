@@ -15,7 +15,7 @@
         
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Content="Import" Grid.Row="0"  Width="90"   HorizontalAlignment="Left" Click="ImportNewSong"/>
-            <Button Content="Export" Grid.Row="0"  Width="90"   HorizontalAlignment="Left"/>
+            <Button Content="Export" Grid.Row="0"  Width="90"   HorizontalAlignment="Left" Click="ExportSong"/>
             <Button Content="Songs" Grid.Row="0"  Width="90"   HorizontalAlignment="Left" Margin="0,0,0,0" FontStyle="Italic" Click="LoadSongs" Background="AntiqueWhite"/>
 
         </StackPanel>
