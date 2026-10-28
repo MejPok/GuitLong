@@ -29,12 +29,29 @@ namespace GuitLong.Code.Pages
             PopulateSectionNames();
             PopulateSectionStrum();
             PopulateSectionBPM();
+
+            ShowPreviousData();
+
         }
 
         List<TextBlock> sectionTextBlocks = new List<TextBlock>();
         List<TextBox> sectionStrummingTextBoxes = new List<TextBox>();
         List<TextBox> sectionBPMTextBoxes = new List<TextBox>();
 
+        void ShowPreviousData()
+        {
+            for(int i = 0; i < song.Sections.Count; i++)
+            {
+                if(sectionStrummingTextBoxes.Count > i)
+                {
+                    sectionStrummingTextBoxes[i].Text = song.Sections[i].Strumming.GetStrumString();
+                }
+                if(sectionBPMTextBoxes.Count > i)
+                {
+                    sectionBPMTextBoxes[i].Text = song.Sections[i].Strumming.BPM.ToString();
+                }
+            }
+        }
 
         void PopulateSectionNames()
         {
@@ -147,7 +164,7 @@ namespace GuitLong.Code.Pages
                         section.Strumming.BPM = bpm;
                     }
 
-                    section.Strumming.Strums.AddRange(loadStrums(sectionStrum));
+                    section.Strumming.Strums = loadStrums(sectionStrum);
                 }
             }
 

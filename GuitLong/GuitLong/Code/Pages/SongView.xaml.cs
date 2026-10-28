@@ -69,7 +69,8 @@ namespace GuitLong.Code.Pages
 
         void CreateStrummingHelpUI()
         {
-            for(int i = 0; i < song.Sections[currentSectionIndex].Strumming.Strums.Count; i++)
+            strumDirUIList.Clear();
+            for (int i = 0; i < song.Sections[currentSectionIndex].Strumming.Strums.Count; i++)
             {
                 TextBlock strumDirUI = new TextBlock();
                 strumDirUI.Tag = i;
@@ -90,9 +91,12 @@ namespace GuitLong.Code.Pages
                     strumDirUI.Text = ".";
                 }
 
+               
+
+                strumDirUI.Foreground = (i == currentStrumIndex) ? new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0)) : new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
                 strumDirUI.Width = 120;
                 strumDirUI.Height = 120;
-                strumDirUI.FontSize = 80;
+                strumDirUI.FontSize = (i == currentStrumIndex) ? 90 : 80;
                 strumDirUI.HorizontalAlignment = HorizontalAlignment.Left;
 
                 strumDirUI.Margin = new Thickness(i * 50 + 150, 0, 0, 0);
@@ -249,6 +253,7 @@ namespace GuitLong.Code.Pages
                 return;
             }
             beatTime = (float)60000 / (float)song.Sections[currentSectionIndex].Strumming.BPM / (float)2;
+
             _timer.SetInterval(TimeSpan.FromMilliseconds(beatTime));
             strumGrid.Children.Clear();
             strumDirUIList.Clear();
@@ -307,8 +312,10 @@ namespace GuitLong.Code.Pages
             {
                 currentStrumIndex = 0;
                 nextChordButton_Click(sender, e);
-            }
+            } 
             ReloadSongStrumming();
+
+
         }
 
 
