@@ -25,6 +25,8 @@ namespace GuitLong.Code.Pages
         {
             InitializeComponent();
             LoadSongData();
+            App.Current.MainWindow.Width = 800;
+            App.Current.MainWindow.Height = 450;
         }
 
         public void LoadSongData()
@@ -41,6 +43,7 @@ namespace GuitLong.Code.Pages
             {
                 string fileName = System.IO.Path.GetFileName(file);
                 songNames.Add(fileName);
+
             }
 
             songsView.ItemsSource = songNames;

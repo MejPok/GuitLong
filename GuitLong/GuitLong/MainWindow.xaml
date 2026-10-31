@@ -11,7 +11,7 @@
             <RowDefinition Height="25*"/>
             <RowDefinition Height="409*"/>
         </Grid.RowDefinitions>
-        <Rectangle Grid.Row="0" Fill="LightGray"/>
+        <Rectangle Grid.Row="0" Fill="#FF07061D"/>
         
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Content="Import" Grid.Row="0"  Width="90"   HorizontalAlignment="Left" Click="ImportNewSong"/>
@@ -19,8 +19,8 @@
             <Button Content="Songs" Grid.Row="0"  Width="90"   HorizontalAlignment="Left" Margin="0,0,0,0" FontStyle="Italic" Click="LoadSongs" Background="AntiqueWhite"/>
 
         </StackPanel>
-        
-        <Frame Grid.Row="1" Background="#FF4E607D" Foreground="Black" Name="MainFrame" NavigationUIVisibility="Hidden">
+
+        <Frame Grid.Row="1" Background="#FF07061D" Foreground="Black" Name="MainFrame" NavigationUIVisibility="Hidden">
 
         </Frame>
     </Grid>

@@ -26,6 +26,8 @@ namespace GuitLong.Code.Parser
         public ParsePage()
         {
             InitializeComponent();
+            App.Current.MainWindow.Width = 800;
+            App.Current.MainWindow.Height = 450;
         }
 
         private async void SubmitUrl(object sender, RoutedEventArgs e)

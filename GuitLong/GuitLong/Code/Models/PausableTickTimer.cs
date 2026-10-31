@@ -43,14 +43,17 @@ public sealed class PausableTickTimer
 
     public void Pause()
     {
+
         if (_paused) return;
 
         _remaining = _nextTickAt - _clock.Elapsed;
+
         if (_remaining < TimeSpan.Zero)
             _remaining = TimeSpan.Zero;
 
         _timer.Stop();
         _paused = true;
+
     }
 
     public void Resume()

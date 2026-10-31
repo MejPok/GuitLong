@@ -25,6 +25,10 @@ namespace GuitLong.Code.Pages
         public EditSong(Song song)
         {
             this.song = song;
+
+            App.Current.MainWindow.Width = 1800;
+            App.Current.MainWindow.Height = 1200;
+
             InitializeComponent();
             PopulateSectionNames();
             PopulateSectionStrum();

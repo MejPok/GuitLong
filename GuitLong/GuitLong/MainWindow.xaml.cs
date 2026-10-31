@@ -25,6 +25,9 @@ namespace GuitLong
             this.DataContext = this;
             Instance = this;
             CreateSongFolder();
+
+            App.Current.MainWindow.Width = 800;
+            App.Current.MainWindow.Height = 450;
         }
 
         void CreateSongFolder()

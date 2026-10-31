@@ -28,7 +28,9 @@ namespace GuitLong.Code.Pages
         public event ButtonHandler PowerButtonClicked;
         public Song song;
         public int currentSectionIndex = 0;
-        public int currentRowIndex = 0;
+
+        int currentRowIndex;
+        public int CurrentRowIndex { get { return currentRowIndex; } set { currentRowIndex = value; AllRowsIndex++; } }
         public int currentChordIndex = 0;
         public int currentStrumIndex = 0;
 
@@ -59,9 +61,10 @@ namespace GuitLong.Code.Pages
         private void Timer_Tick(object? sender, EventArgs e)
         {
             nextStrum(sender, new RoutedEventArgs());
-            if(selectedSongElementExists(currentSectionIndex, currentRowIndex, currentChordIndex))
+            ShowLyricsProgress();
+            if(selectedSongElementExists(currentSectionIndex, CurrentRowIndex, currentChordIndex))
             {
-                stateInfo.Text = $"Section: {currentSectionIndex + 1}/{song.Sections.Count}, Row: {currentRowIndex + 1}/{song.Sections[currentSectionIndex].Rows.Count}, Chord: {currentChordIndex + 1}/{song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count}, Strum: {currentStrumIndex + 1}/{song.Sections[currentSectionIndex].Strumming.Strums.Count}";
+                stateInfo.Text = $"Section: {currentSectionIndex + 1}/{song.Sections.Count}, Row: {CurrentRowIndex + 1}/{song.Sections[currentSectionIndex].Rows.Count}, Chord: {currentChordIndex + 1}/{song.Sections[currentSectionIndex].Rows[CurrentRowIndex].Chords.Count}, Strum: {currentStrumIndex + 1}/{song.Sections[currentSectionIndex].Strumming.Strums.Count}";
             }
         }
 
@@ -114,17 +117,44 @@ namespace GuitLong.Code.Pages
             strumChordUI.FontSize = 40;
 
 
-            if (selectedSongElementExists(currentSectionIndex, currentRowIndex, currentChordIndex))
+            if (selectedSongElementExists(currentSectionIndex, CurrentRowIndex, currentChordIndex))
             {
-                strumChordUI.Text = song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords[currentChordIndex].Name;
+                strumChordUI.Text = song.Sections[currentSectionIndex].Rows[CurrentRowIndex].Chords[currentChordIndex].Name;
             }
-
+            strumChordUI.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                    
             strumChordUI.HorizontalAlignment = HorizontalAlignment.Center;
             strumChordUI.VerticalAlignment = VerticalAlignment.Center;
 
             Grid.SetRow(strumChordUI, 0);
             strumGrid.Children.Add(strumChordUI);
 
+            
+
+        }
+
+        void ShowLyricsProgress()
+        {
+            for(int i = 0; i < song.Sections[currentSectionIndex].Rows.Count; i++)
+            {
+                foreach(List<TextBlock> row in sectionRows)
+                {
+                    foreach(TextBlock line in row)
+                    {
+                        if (!selectedSongElementExists(currentSectionIndex, currentRowIndex)) continue;
+                        if(line.Text == song.Sections[currentSectionIndex].Rows[currentRowIndex].GetChordText() || line.Text == song.Sections[currentSectionIndex].Rows[currentRowIndex].GetLyricsText())
+                        {
+                            line.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                            line.FontSize = 25;
+                        } else
+                        {
+                            line.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                            line.FontSize = 20;
+                        }
+                    }
+                    
+                }
+            }
         }
 
         bool selectedSongElementExists(int section = 0, int row = 0, int chord = 0)
@@ -172,7 +202,7 @@ namespace GuitLong.Code.Pages
             }
         }
 
-
+        public int AllRowsIndex = 0;
         void GenerateAllRows()
         {
             List<TextBlock> rowContents = new List<TextBlock>();
@@ -192,10 +222,13 @@ namespace GuitLong.Code.Pages
                 Grid.SetColumn(rowContents[i], 0);
 
                 songGrid.Children.Add(rowContents[i]);
+                
+                
             }
 
         }
 
+        List<List<TextBlock>> sectionRows = new List<List<TextBlock>>();
 
         HorizontalAlignment blockAlign = HorizontalAlignment.Left;
         TextAlignment textAlign = TextAlignment.Left;
@@ -231,6 +264,10 @@ namespace GuitLong.Code.Pages
                 lyrics.Text = rowItem.GetLyricsText();
                 rowContents.Add(lyrics);
 
+                TextBlock[] combied = { rowTextBlock, lyrics };
+
+                List<TextBlock> rowCombined = combied.ToList();
+                sectionRows.Add(rowCombined);
 
             }
 
@@ -264,7 +301,7 @@ namespace GuitLong.Code.Pages
         private void nextSectionButton_Click(object sender, RoutedEventArgs e)
         {
             currentSectionIndex++;
-            currentRowIndex = 0;
+            CurrentRowIndex = 0;
             currentChordIndex = 0;
             currentStrumIndex = 0;
 
@@ -280,13 +317,14 @@ namespace GuitLong.Code.Pages
 
         private void nextRowButton_Click(object sender, RoutedEventArgs e)
         {
-            currentRowIndex++;
+            CurrentRowIndex++;
+            ShowLyricsProgress();
             currentChordIndex = 0;
             currentStrumIndex = 0;
 
-            if (currentRowIndex >= song.Sections[currentSectionIndex].Rows.Count)
+            if (CurrentRowIndex >= song.Sections[currentSectionIndex].Rows.Count)
             {
-                currentRowIndex = 0;
+                CurrentRowIndex = 0;
                 nextSectionButton_Click(sender, e);
             }
             ReloadSongStrumming();
@@ -296,8 +334,15 @@ namespace GuitLong.Code.Pages
         {
             currentChordIndex++;
             currentStrumIndex = 0;
+
+            if(!selectedSongElementExists(currentSectionIndex, CurrentRowIndex, currentChordIndex))
+            {
+                currentChordIndex = 0;
+                nextRowButton_Click(sender, e);
+                return;
+            }
             
-            if (currentChordIndex >= song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count)
+            if (currentChordIndex >= song.Sections[currentSectionIndex].Rows[CurrentRowIndex].Chords.Count)
             {
                 currentChordIndex = 0;
                 nextRowButton_Click(sender, e);
