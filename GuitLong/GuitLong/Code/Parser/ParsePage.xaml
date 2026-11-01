@@ -15,16 +15,16 @@
             <RowDefinition Height="137*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Import New Song" FontSize="50" HorizontalAlignment="Center"/>
+        <TextBlock Text="Import New Song" FontSize="50" HorizontalAlignment="Center" Foreground="AntiqueWhite"/>
 
         <StackPanel Grid.Row="1" Margin="20, 0, 0, 0">
-            <TextBlock Text="Enter URL:" HorizontalAlignment="Left"/>
+            <TextBlock Text="Enter URL:" HorizontalAlignment="Left" Foreground="AntiqueWhite"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="299*"/>
                     <ColumnDefinition Width="101*"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Height="30" Text="" Name="urlText" HorizontalAlignment="Left" MaxWidth="600" Width="600" Margin="10, 0, 10, 0"/>
+                <TextBox Height="30" Text="https://tabs.ultimate-guitar.com/tab/radiohead/creep-chords-4169" Name="urlText" HorizontalAlignment="Left" MaxWidth="600" Width="600" Margin="10, 0, 10, 0" />
                 <Button Content="Submit" MaxWidth="100" Height="30" Click="SubmitUrl" Grid.Column="1" Margin="0,5,0,5"/>
             </Grid>
         </StackPanel>
@@ -36,12 +36,14 @@
                 IsReadOnly="True"
                 BorderThickness="0"
                 Background="Transparent"
+                Foreground="AntiqueWhite"
                 TextWrapping="Wrap"
                 Padding="0"
+                
             />
 
-            <TextBlock Name="songName" Text="Name:"/>
-            <TextBlock Name="songAuthor" Text="Author:"/>
+            <TextBlock Name="songName" Text="Name:" Foreground="AntiqueWhite"/>
+            <TextBlock Name="songAuthor" Text="Author:" Foreground="AntiqueWhite"/>
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -57,8 +59,13 @@
                 <Button Content="Convert to Song data" MaxWidth="150" Height="30" Click="ConvertSongData" Grid.Column="0" Grid.Row="0"/>
                 <Button Content="Save Song" MaxWidth="150" Height="30" Click="SaveSong" Grid.Column="1" Grid.Row="0"/>
 
-                <TextBlock Text="Custom Name:" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,10,0,0" />
-                <TextBox Name="nameInput" Width="400" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,10,0,0"/>
+                <TextBlock Text="Custom Name:" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,10,0,0" Foreground="AntiqueWhite"/>
+                <TextBox Name="nameInput" Width="400" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,10,0,0" Height="50"/>
+
+                <TextBlock Text="Get url from this website: https://www.ultimate-guitar.com" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,100,0,0" Foreground="AntiqueWhite"/>
+                <TextBox Text="Example url: https://tabs.ultimate-guitar.com/tab/radiohead/creep-chords-4169" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,120,0,0" Foreground="Black" IsReadOnly="True" />
+
+
             </Grid>
 
         </StackPanel>

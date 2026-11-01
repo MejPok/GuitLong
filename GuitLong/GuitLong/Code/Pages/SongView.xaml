@@ -20,21 +20,38 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="Song Title" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Name="songTitle" Grid.ColumnSpan="2" Margin="843,0,0,0" Foreground="AntiqueWhite"/>
-
-        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" Grid.Column="0" Margin="0,56,0,0" Grid.RowSpan="2" >
+        <TextBlock Name="capoInfo" Text="Capo: 0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="AntiqueWhite"/>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Column="0" Margin="0,56,0,0" Grid.RowSpan="2" HorizontalScrollBarVisibility="Visible" Name="scrollViewer">
             <Grid Name="songGrid" Margin="10,0,0,0">
 
             </Grid>
         </ScrollViewer>
+        <StackPanel Grid.Row="1" Grid.Column="1" >
+            <Image 
+            Name="chordImage" 
+            Width="220"
+            Height="220"
+            Stretch="Uniform"
+            />
 
-        <Grid Grid.Row="1" Grid.Column="1" Name="strumGrid">
+                    <TextBlock 
+            x:Name="imageCredit"
+             FontSize="12"
+            HorizontalAlignment="Center"
+            Margin="290,0,0,0"
+            Width="560"
+            Height="40"
+            Foreground="AntiqueWhite"
+        />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Grid.Column="1" Name="strumGrid" Margin="0, 200, 0, 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100*"/>
                 <RowDefinition Height="40*"/>
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
-
-            
+          
         </Grid>
 
         <Rectangle Grid.Row="2" Fill="LightGray" Grid.ColumnSpan="2" />

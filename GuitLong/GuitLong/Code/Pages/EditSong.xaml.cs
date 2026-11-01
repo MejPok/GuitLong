@@ -91,6 +91,7 @@ namespace GuitLong.Code.Pages
             sectionName.FontWeight = FontWeights.Bold;
             sectionName.Margin = new Thickness(0, 10, 0, 10);
             sectionName.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+            sectionName.HorizontalAlignment = HorizontalAlignment.Center;
             return sectionName;
         }
 

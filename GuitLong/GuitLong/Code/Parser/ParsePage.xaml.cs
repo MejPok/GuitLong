@@ -42,13 +42,14 @@ namespace GuitLong.Code.Parser
 
                 baseSongData = song;
                 jsonData = scraper.savedJson;
+                statusText.Text = $"Status: Scrape successful";
+
 
             }
             catch (Exception ex)
             {
                 statusText.Text = $"Status Error: {ex.Message}";
             } 
-
 
         }
 
@@ -59,7 +60,8 @@ namespace GuitLong.Code.Parser
                 var converter = new ConvertToSongData(jsonData);
 
                 var convertedSong = converter.CreateSongData(jsonData, baseSongData);
-                
+
+                statusText.Text = $"Status: data converted, save to database?";
 
             }
             else

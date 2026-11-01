@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace GuitLong.Code.Pages
 {
@@ -36,8 +37,7 @@ namespace GuitLong.Code.Pages
             songTitle.Text = song.Title;
             songTitle.FontSize = 40;
 
-
-
+            capoInfo.Text = $"Capo: {song.Capo}";
 
             beatTime = (float)60000 / (float)song.Sections[currentSectionIndex].Strumming.BPM / (float)2;
             if (_timer == null)
@@ -340,13 +340,26 @@ namespace GuitLong.Code.Pages
 
         void timerTick(object? sender, EventArgs e)
         {
+            
+            
+
             currentStrumIndex++;
 
-            controlPhaseCriteria();
+            if(!controlPhaseCriteria())
+            {
+                return;
+            }
             ReloadSongStrumming();
             ShowLyricsProgress();
 
-            stateInfo.Text = $"Section: {currentSectionIndex + 1}/{song.Sections.Count}, Row: {currentRowIndex + 1}/{song.Sections[currentSectionIndex].Rows.Count}, Chord: {currentChordIndex + 1}/{song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count}, Strum: {currentStrumIndex + 1}/{song.Sections[currentSectionIndex].Strumming.Strums.Count}";
+            if (song.Sections[currentSectionIndex].Strumming.Strums.Count > currentStrumIndex)
+            {
+                stateInfo.Text = $"Section: {currentSectionIndex + 1}/{song.Sections.Count}, Row: {currentRowIndex + 1}/{song.Sections[currentSectionIndex].Rows.Count}, Chord: {currentChordIndex + 1}/{song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count}, Strum: {currentStrumIndex + 1}/{song.Sections[currentSectionIndex].Strumming.Strums.Count}";
+            }
+            else
+            {
+                Debug.WriteLine("strum index out of range");
+            }
             long now = clock.ElapsedMilliseconds;
 
             if (lastTick != 0)
@@ -355,11 +368,9 @@ namespace GuitLong.Code.Pages
             }
 
             lastTick = now;
-
-
         }
 
-        void controlPhaseCriteria()
+        bool controlPhaseCriteria()
         {
             /*
              jsem na konci strumu
@@ -382,6 +393,13 @@ namespace GuitLong.Code.Pages
                 {
                     currentStrumIndex = 0;
                     currentChordIndex++;
+
+                    if(currentRowIndex < song.Sections[currentSectionIndex].Rows.Count &&
+                       currentChordIndex < song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count)
+                    {
+                        _ = ShowChordImage(song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords[currentChordIndex].Name);
+                    }
+
                 }
 
                 if (song.Sections[currentSectionIndex].Rows.Count > currentRowIndex)
@@ -393,6 +411,13 @@ namespace GuitLong.Code.Pages
                         currentStrumIndex = 0;
 
                         currentRowIndex++;
+                        scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 30);
+
+                        if (currentRowIndex < song.Sections[currentSectionIndex].Rows.Count &&
+                       currentChordIndex < song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count)
+                        {
+                            _ = ShowChordImage(song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords[currentChordIndex].Name);
+                        }
                     }
 
                 }
@@ -403,7 +428,16 @@ namespace GuitLong.Code.Pages
                     currentChordIndex = 0;
                     currentStrumIndex = 0;
 
+
                     currentSectionIndex++;
+                    if (song.Sections.Count > currentSectionIndex)
+                    {
+                        if (currentRowIndex < song.Sections[currentSectionIndex].Rows.Count &&
+                       currentChordIndex < song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords.Count)
+                        {
+                            _ = ShowChordImage(song.Sections[currentSectionIndex].Rows[currentRowIndex].Chords[currentChordIndex].Name);
+                        }
+                    }
                 }
 
             }
@@ -416,14 +450,15 @@ namespace GuitLong.Code.Pages
             {
                 isPlaying = !isPlaying;
                 SetButtonState();
-                MessageBox.Show("song finished");
+                MessageBox.Show("Song completed, make sure the song is edited correctly if it wasnt supposed to end yet.");
                 NavigationService.Navigate(new LoadSong());
-                return;
+                return false;
             }
             else
             {
                 SetTimer();
             }
+            return true;
 
         }
 
@@ -455,6 +490,25 @@ namespace GuitLong.Code.Pages
             currentStrumIndex++;
         }
 
+        async Task ShowChordImage(string chordName)
+        {
+            string id = "";
+            id += chordName[0];
+            id = id.ToLower();
 
+            string slug = "";
+
+            slug = (chordName.Length > 1) ?  "-minor":"-major";
+
+
+            chordImage.Source = chordName == null
+                ? null
+                : new BitmapImage(new Uri(
+                    $"https://emusic.tools/chord-diagram/{id + slug}/{id + slug}-guitar-chord-diagram.png"));
+
+            imageCredit.Text = chordName == null
+                ? ""
+                : $"Image credit: https://emusic.tools/chord-diagram/{id + slug}/{id + slug}-guitar-chord-diagram.png";
+        }
     }
 }
