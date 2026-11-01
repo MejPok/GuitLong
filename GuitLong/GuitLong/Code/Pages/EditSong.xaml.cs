@@ -154,27 +154,22 @@ namespace GuitLong.Code.Pages
 
         private void SaveStrum(object sender, RoutedEventArgs e)
         {
-            for(int i = 0; i < sectionStrummingTextBoxes.Count; i++)
+            for (int i = 0; i < sectionStrummingTextBoxes.Count && i < song.Sections.Count; i++)
             {
-                var sectionName = sectionStrummingTextBoxes[i].Tag.ToString();
+                var section = song.Sections[i];
                 var sectionStrum = sectionStrummingTextBoxes[i].Text;
                 var sectionBPM = sectionBPMTextBoxes[i].Text;
-                var section = song.Sections.Find(s => s.Name == sectionName);
 
-                if (section != null)
+                if (int.TryParse(sectionBPM, out int bpm))
                 {
-                    if (int.TryParse(sectionBPM, out int bpm))
-                    {
-                        section.Strumming.BPM = bpm;
-                    }
-
-                    section.Strumming.Strums = loadStrums(sectionStrum);
+                    section.Strumming.BPM = bpm;
                 }
+
+                section.Strumming.Strums = loadStrums(sectionStrum);
             }
 
             var saver = new SongSaver();
             saver.SaveSong(song);
-
         }
 
         List<Strum> loadStrums(string strum)

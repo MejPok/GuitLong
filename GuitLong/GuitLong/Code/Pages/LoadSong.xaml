@@ -16,7 +16,9 @@
         <ListView Grid.Row="0" Name="songsView">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Song Name" Width="200"/>
+                    <GridViewColumn Header="Song Name" Width="200" DisplayMemberBinding="{Binding Title}"/>
+                    <GridViewColumn Header="Author" Width="200" DisplayMemberBinding="{Binding Author}"/>
+                    <GridViewColumn Header="Difficulty" Width="200" DisplayMemberBinding="{Binding Difficulty}"/>
                 </GridView>
             </ListView.View>
         </ListView>

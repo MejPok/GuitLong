@@ -28,6 +28,15 @@ namespace GuitLong.Code.Pages
             App.Current.MainWindow.Height = 450;
         }
 
+        public sealed class songInfo
+        {
+            public string Title { get; set; }
+            public string Author { get; set; }
+            public string Difficulty { get; set; }
+
+            public string SongFilePath { get; set; }
+        }
+
         public void LoadSongData()
         {
             string savedSongsFolder = System.IO.Path.Combine(
@@ -36,22 +45,31 @@ namespace GuitLong.Code.Pages
                 );
 
             string[] files = Directory.GetFiles(savedSongsFolder);
-            List<string> songNames = new List<string>();
+            List<songInfo> songsToLoad = new List<songInfo>();
 
             foreach (string file in files)
             {
-                string fileName = System.IO.Path.GetFileName(file);
-                songNames.Add(fileName);
+                string json = File.ReadAllText(file);
+                Song loadedSong = System.Text.Json.JsonSerializer.Deserialize<Song>(json);
+                songsToLoad.Add(new songInfo
+                {
+                    Title = loadedSong.Title,
+                    Author = loadedSong.Author,
+                    Difficulty = loadedSong.Difficulty,
+                    SongFilePath = file
+                });
             }
 
-            songsView.ItemsSource = songNames;
+            
+
+            songsView.ItemsSource = songsToLoad;
         }
 
         private void LoadSong_Click(object sender, RoutedEventArgs e)
         {
             if(songsView.SelectedItem != null)
             {
-                string selectedSong = songsView.SelectedItem.ToString();
+                string selectedSong = ((songInfo)songsView.SelectedItem).SongFilePath;
                 string savedSongsFolder = System.IO.Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
                     "SavedSongs"
@@ -81,7 +99,7 @@ namespace GuitLong.Code.Pages
         {
             if (songsView.SelectedItem != null)
             {
-                string selectedSong = songsView.SelectedItem.ToString();
+                string selectedSong = ((songInfo)songsView.SelectedItem).SongFilePath;
                 string savedSongsFolder = System.IO.Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
                     "SavedSongs"

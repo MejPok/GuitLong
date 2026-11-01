@@ -65,29 +65,42 @@ namespace GuitLong.Code.Models.Converting
         public async Task<Song> findRows(string _json, Song songBase)
         {
             Section sectionForReference;
+            int searchFrom = 0;
+
             foreach (var section in songBase.Sections)
             {
                 sectionForReference = section;
-                int startIndex = _json.IndexOf(section.Name) + section.Name.Length;
-                int endIndex = _json.IndexOf("[", startIndex) - 1;
 
-                if(endIndex == -1 || endIndex == -1)
+                int startIndex = _json.IndexOf(section.Name, searchFrom);
+                if (startIndex == -1)
                 {
-                    throw new Exception("Error: Could not find the start or end of the section in the JSON string.");
+                    throw new Exception($"Error: Could not find section {section.Name} in the JSON string.");
+                }
+
+                startIndex += section.Name.Length;
+
+                int endIndex = _json.IndexOf("[", startIndex);
+                if (endIndex == -1)
+                {
+                    endIndex = _json.Length;
                 }
 
                 string sectionContent = _json.Substring(startIndex, endIndex - startIndex);
+                searchFrom = endIndex;
 
-                string[] rows = sectionContent.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] rows = sectionContent.Split(
+                    new[] { '\n' },
+                    StringSplitOptions.RemoveEmptyEntries
+                );
 
                 List<Chord> lastRowChords = new List<Chord>();
-                
+
                 foreach (var row in rows)
                 {
                     rowFindChords(row, ref songBase, ref lastRowChords, ref sectionForReference);
                 }
-
             }
+
             return songBase;
         }
 

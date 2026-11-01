@@ -7,6 +7,10 @@
 
         public string GetChordText()
         {
+            if(Chords.Count == 0)
+            {
+                return "";
+            }
             int length = Chords[Chords.Count - 1].CharacterPosition + Chords[Chords.Count - 1].Name.Length;
             string chordText = String.Concat(Enumerable.Repeat(" ", length));
 
