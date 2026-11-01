@@ -19,5 +19,3 @@ This is but a fun project, these kinds of applications are often paid, so why no
 In the directory run:
 ```bash
 dotnet run --project GuitLong/GuitLong.csproj
-
-<img width="1779" height="1183" alt="image" src="https://github.com/user-attachments/assets/e5d0e5d9-38c0-466b-b8ec-f625a5d3745d" />
