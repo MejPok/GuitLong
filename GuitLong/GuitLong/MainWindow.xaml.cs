@@ -1,15 +1,6 @@
 ﻿using GuitLong.Code.Pages;
 using GuitLong.Code.Parser;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GuitLong
 {
@@ -25,10 +16,12 @@ namespace GuitLong
             this.DataContext = this;
             Instance = this;
             CreateSongFolder();
-            
+
 
             App.Current.MainWindow.Width = 800;
             App.Current.MainWindow.Height = 450;
+
+            MessageBox.Show("Welcome to GuitLong! To get started, click the 'Import New Song' button and enter a URL from ultimate-guitar.com. The app will scrape the song data and convert it into a format that can be used for practice. You can then edit the song, play it, or export it for later use.");
         }
 
         void CreateSongFolder()

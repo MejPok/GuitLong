@@ -1,18 +1,9 @@
 ﻿using GuitLong.Code.Models;
 using GuitLong.Code.Models.Converting;
 using GuitLong.Code.Models.Strumming;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GuitLong.Code.Pages
 {
@@ -44,13 +35,13 @@ namespace GuitLong.Code.Pages
 
         void ShowPreviousData()
         {
-            for(int i = 0; i < song.Sections.Count; i++)
+            for (int i = 0; i < song.Sections.Count; i++)
             {
-                if(sectionStrummingTextBoxes.Count > i)
+                if (sectionStrummingTextBoxes.Count > i)
                 {
                     sectionStrummingTextBoxes[i].Text = song.Sections[i].Strumming.GetStrumString();
                 }
-                if(sectionBPMTextBoxes.Count > i)
+                if (sectionBPMTextBoxes.Count > i)
                 {
                     sectionBPMTextBoxes[i].Text = song.Sections[i].Strumming.BPM.ToString();
                 }
@@ -60,7 +51,7 @@ namespace GuitLong.Code.Pages
         void PopulateSectionNames()
         {
             var nameGrid = SectionStrum;
-            
+
             foreach (var section in song.Sections)
             {
                 sectionTextBlocks.Add(createSectionName(section.Name));
@@ -122,12 +113,12 @@ namespace GuitLong.Code.Pages
             sectionStrum.Margin = new Thickness(0, 10, 0, 10);
             sectionStrum.Height = 30;
 
-            if(width != 30)
+            if (width != 30)
             {
                 sectionStrum.Width = width;
                 sectionStrum.HorizontalAlignment = HorizontalAlignment.Center;
             }
-            
+
 
             sectionStrum.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(1, 1, 1));
             return sectionStrum;
@@ -182,12 +173,13 @@ namespace GuitLong.Code.Pages
             {
                 if (s == 'D' || s == 'd')
                 {
-                    result.Add(new Strum() { Direction = StrumDirection.Down, Beat = beat});
+                    result.Add(new Strum() { Direction = StrumDirection.Down, Beat = beat });
                 }
                 else if (s == 'U' || s == 'u')
                 {
                     result.Add(new Strum() { Direction = StrumDirection.Up, Beat = beat });
-                } else if(s == '-')
+                }
+                else if (s == '-')
                 {
                     result.Add(new Strum() { Direction = StrumDirection.None, Beat = beat });
                 }
